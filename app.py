@@ -5,6 +5,7 @@ import joblib
 import requests
 from streamlit_lottie import st_lottie
 import time
+
 # ──────────────────────────────────────────────
 # PAGE CONFIG
 # ──────────────────────────────────────────────
@@ -14,6 +15,7 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed",
 )
+
 # ──────────────────────────────────────────────
 # FULL-SCREEN INTERACTIVE PARTICLE CANVAS
 # Renders a JS canvas with 90 floating particles
@@ -30,6 +32,7 @@ PARTICLE_HTML = """
   function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
   window.addEventListener('resize',resize);resize();
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+
   const N=90, particles=[];
   for(let i=0;i<N;i++){
     const hue=250+Math.random()*60;
@@ -42,8 +45,10 @@ PARTICLE_HTML = """
       pulse:Math.random()*Math.PI*2
     });
   }
+
   function draw(){
     ctx.clearRect(0,0,W,H);
+
     // --- connection lines ---
     for(let i=0;i<N;i++){
       for(let j=i+1;j<N;j++){
@@ -60,6 +65,7 @@ PARTICLE_HTML = """
         }
       }
     }
+
     // --- particles ---
     const t=Date.now()*0.001;
     for(const p of particles){
@@ -74,14 +80,17 @@ PARTICLE_HTML = """
       p.x+=p.vx; p.y+=p.vy;
       if(p.x<0)p.x=W; if(p.x>W)p.x=0;
       if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+
       const pulse=Math.sin(t*1.5+p.pulse)*0.3+0.7;
       const glowR=p.r*3*pulse;
+
       // outer glow
       const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,glowR*3);
       grd.addColorStop(0,'hsla('+p.hue+',80%,70%,'+(p.alpha*pulse*0.4)+')');
       grd.addColorStop(1,'hsla('+p.hue+',80%,70%,0)');
       ctx.beginPath();ctx.arc(p.x,p.y,glowR*3,0,Math.PI*2);
       ctx.fillStyle=grd;ctx.fill();
+
       // core dot
       ctx.beginPath();ctx.arc(p.x,p.y,p.r*pulse,0,Math.PI*2);
       ctx.fillStyle='hsla('+p.hue+',80%,75%,'+(p.alpha*pulse)+')';
@@ -94,6 +103,8 @@ PARTICLE_HTML = """
 </script>
 """
 components.html(PARTICLE_HTML, height=0, scrolling=False)
+
+
 # ──────────────────────────────────────────────
 # PREMIUM DARK GLASSMORPHISM THEME + VFX CSS
 # ──────────────────────────────────────────────
@@ -101,6 +112,7 @@ st.markdown("""
 <style>
 /* ── Google Font import ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
 /* ── Root variables ── */
 :root {
     --bg-primary:   #060609;
@@ -118,15 +130,18 @@ st.markdown("""
     --radius-lg:    24px;
     --transition:   0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 /* ── Hide Streamlit chrome ── */
 #MainMenu, header, footer { visibility: hidden; }
 .stDeployButton { display: none !important; }
+
 /* ── Full-page dark canvas ── */
 .stApp {
     background: var(--bg-primary) !important;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
 }
+
 /* ── Animated gradient orbs (ambient light blobs) ── */
 .stApp::before,
 .stApp::after {
@@ -160,6 +175,7 @@ st.markdown("""
     50%  { transform: translate(-60px, -40px) scale(1.15); }
     100% { transform: translate(50px, -70px) scale(0.85); }
 }
+
 /* ── Scanline overlay for retro-futuristic feel ── */
 .scanline-overlay {
     position: fixed;
@@ -175,6 +191,7 @@ st.markdown("""
         rgba(108, 92, 231, 0.015) 4px
     );
 }
+
 /* ── Floating music notes VFX ── */
 .music-notes-container {
     position: fixed;
@@ -197,8 +214,10 @@ st.markdown("""
     90%  { opacity: 0.15; }
     100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
 }
+
 /* ── Main content z-index fix ── */
 section.main > div { position: relative; z-index: 1; }
+
 /* ── Hero header ── */
 .hero-badge {
     display: inline-block;
@@ -219,6 +238,7 @@ section.main > div { position: relative; z-index: 1; }
     0%, 100% { box-shadow: 0 0 20px rgba(108,92,231,0.3), 0 0 40px rgba(108,92,231,0.1); }
     50%      { box-shadow: 0 0 30px rgba(108,92,231,0.5), 0 0 60px rgba(108,92,231,0.2); }
 }
+
 /* Hero title with shimmer sweep */
 .hero-title {
     font-size: 3.8rem;
@@ -255,6 +275,7 @@ section.main > div { position: relative; z-index: 1; }
     0%   { background-position: 200% center; }
     100% { background-position: -200% center; }
 }
+
 /* Hero title glow */
 .hero-title-glow {
     position: absolute;
@@ -270,6 +291,7 @@ section.main > div { position: relative; z-index: 1; }
     0%   { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
     100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.3); }
 }
+
 .hero-sub {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
@@ -285,6 +307,7 @@ section.main > div { position: relative; z-index: 1; }
     max-width: 520px;
     margin: 0 auto;
 }
+
 /* ── Audio waveform equalizer bars ── */
 .eq-container {
     display: flex;
@@ -306,6 +329,7 @@ section.main > div { position: relative; z-index: 1; }
     0%, 100% { height: 4px;  opacity: 0.3; }
     50%      { opacity: 0.7; }
 }
+
 /* ── Glass cards with corner glow ── */
 .glass-card {
     background: var(--bg-card);
@@ -351,6 +375,7 @@ section.main > div { position: relative; z-index: 1; }
     width: 140px; height: 140px;
     background: radial-gradient(circle, rgba(108,92,231,0.25) 0%, transparent 70%);
 }
+
 /* ── Section labels ── */
 .section-icon {
     font-size: 1.5rem;
@@ -372,6 +397,7 @@ section.main > div { position: relative; z-index: 1; }
     color: var(--text-primary);
     margin-bottom: 14px;
 }
+
 /* ── Slider overrides ── */
 .stSlider > div > div > div > div {
     background: var(--accent-grad) !important;
@@ -396,6 +422,7 @@ div[data-baseweb="slider"] div[role="slider"]:hover {
     font-weight: 600 !important;
     font-size: 0.85rem !important;
 }
+
 /* ── CTA Button with animated border + glow ── */
 div.stButton > button {
     background: var(--accent-grad) !important;
@@ -474,6 +501,7 @@ div.stButton > button:hover::after {
 div.stButton > button:active {
     transform: translateY(0px) scale(0.98) !important;
 }
+
 /* ── Result card with pulse rings ── */
 .result-card {
     background: rgba(255,255,255,0.03);
@@ -525,6 +553,7 @@ div.stButton > button:active {
         100% { transform: rotate(360deg); }
     }
 }
+
 .result-card::before {
     content: '';
     position: absolute;
@@ -536,6 +565,7 @@ div.stButton > button:active {
     0%   { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(8px); }
     100% { opacity: 1; transform: translateY(0)    scale(1);    filter: blur(0px); }
 }
+
 /* Pulse rings behind result */
 .pulse-ring-container {
     position: absolute;
@@ -557,6 +587,7 @@ div.stButton > button:active {
     0%   { width: 40px;  height: 40px;  opacity: 0.4; }
     100% { width: 400px; height: 400px; opacity: 0; }
 }
+
 .result-badge {
     display: inline-block;
     font-family: 'JetBrains Mono', monospace;
@@ -594,6 +625,7 @@ div.stButton > button:active {
     position: relative;
     z-index: 1;
 }
+
 /* ── Stats row ── */
 .stats-row {
     display: flex;
@@ -647,6 +679,7 @@ div.stButton > button:active {
     position: relative;
     z-index: 1;
 }
+
 /* ── Confidence bar ── */
 .confidence-track {
     width: 100%;
@@ -677,6 +710,7 @@ div.stButton > button:active {
 @keyframes fillBar {
     0%   { width: 0%; }
 }
+
 /* ── Footer ── */
 .app-footer {
     text-align: center;
@@ -687,6 +721,7 @@ div.stButton > button:active {
     color: rgba(139,139,158,0.3);
     text-transform: uppercase;
 }
+
 /* ── Streamlit element overrides ── */
 div[data-testid="stVerticalBlock"] > div:has(div.stSlider) {
     background: transparent !important;
@@ -695,10 +730,12 @@ div[data-testid="stVerticalBlock"] > div:has(div.stSlider) {
     padding: 0 !important;
 }
 .stMarkdown h3 { color: var(--text-primary) !important; }
+
 /* ── Particle canvas container (zero-height Streamlit iframe) ── */
 iframe[title="streamlit_lottie.st_lottie"] { z-index: 1; position: relative; }
 div[data-testid="stHtml"] { position: fixed !important; top: 0 !important; left: 0 !important; width: 0 !important; height: 0 !important; overflow: visible !important; z-index: 0 !important; }
 div[data-testid="stHtml"] iframe { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; border: none !important; pointer-events: none !important; z-index: 0 !important; }
+
 /* ── Processing stage text animation ── */
 .stage-text {
     text-align: center;
@@ -714,6 +751,8 @@ div[data-testid="stHtml"] iframe { position: fixed !important; top: 0 !important
 }
 </style>
 """, unsafe_allow_html=True)
+
+
 # ──────────────────────────────────────────────
 # SCANLINE + FLOATING MUSIC NOTES OVERLAY
 # ──────────────────────────────────────────────
@@ -735,6 +774,8 @@ for i, note in enumerate(NOTES):
     )
 notes_html += '</div><div class="scanline-overlay"></div>'
 st.markdown(notes_html, unsafe_allow_html=True)
+
+
 # ──────────────────────────────────────────────
 # LOTTIE LOADER
 # ──────────────────────────────────────────────
@@ -745,12 +786,15 @@ def load_lottieurl(url: str):
             return r.json()
     except Exception:
         return None
+
 lottie_header = load_lottieurl(
     "https://lottie.host/5b26be23-c5a4-4f23-a189-9b4f0b2bb25a/fM4oHhN9oW.json"
 )
 lottie_celebration = load_lottieurl(
     "https://lottie.host/80c436ab-6b08-45ec-b91c-7f51be0ccf5d/c3qCgQ2fCc.json"
 )
+
+
 # ──────────────────────────────────────────────
 # LOAD ML PIPELINE
 # ──────────────────────────────────────────────
@@ -759,7 +803,10 @@ def load_artifacts():
     model = joblib.load("music_genre_svm.pkl")
     scaler = joblib.load("scaler.pkl")
     return model, scaler
+
 model, scaler = load_artifacts()
+
+
 # ──────────────────────────────────────────────
 # HERO HEADER
 # ──────────────────────────────────────────────
@@ -775,6 +822,7 @@ st.markdown(
     'and discover the genre DNA hidden inside any track.</p>',
     unsafe_allow_html=True,
 )
+
 # Waveform equalizer bars
 eq_bars = '<div class="eq-container">'
 for i in range(24):
@@ -790,14 +838,20 @@ for i in range(24):
     )
 eq_bars += '</div>'
 st.markdown(eq_bars, unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
+
 if lottie_header:
     st_lottie(lottie_header, height=90, key="header_anim")
+
 st.markdown("<br>", unsafe_allow_html=True)
+
+
 # ──────────────────────────────────────────────
 # INPUT PANEL — Two glass cards side by side
 # ──────────────────────────────────────────────
 col1, col2 = st.columns(2, gap="medium")
+
 with col1:
     st.markdown("""
         <div class="glass-card">
@@ -814,6 +868,7 @@ with col1:
         step=1.0,
         key="tempo_slider",
     )
+
 with col2:
     st.markdown("""
         <div class="glass-card">
@@ -830,11 +885,16 @@ with col2:
         step=1.0,
         key="acoustic_slider",
     )
+
 st.markdown("<br>", unsafe_allow_html=True)
+
+
 # ──────────────────────────────────────────────
 # CTA BUTTON
 # ──────────────────────────────────────────────
 analyze_clicked = st.button("⚡  ANALYZE SONIC SIGNATURE")
+
+
 # ──────────────────────────────────────────────
 # GENRE PROFILES DATABASE
 # ──────────────────────────────────────────────
@@ -894,6 +954,7 @@ def get_genre_profile(prediction: str, tempo: float, acousticness: float):
             ),
         },
     }
+
     return profiles.get(
         prediction.lower(),
         {
@@ -908,10 +969,13 @@ def get_genre_profile(prediction: str, tempo: float, acousticness: float):
             ),
         },
     )
+
+
 # ──────────────────────────────────────────────
 # INFERENCE + RESULT DISPLAY
 # ──────────────────────────────────────────────
 if analyze_clicked:
+
     # Visual processing feedback with animated stages
     progress_placeholder = st.empty()
     stages = [
@@ -926,6 +990,7 @@ if analyze_clicked:
         )
         time.sleep(delay)
     progress_placeholder.empty()
+
     # Classify
     input_data = pd.DataFrame(
         [[tempo, acousticness]], columns=["tempo", "acousticness"]
@@ -933,173 +998,62 @@ if analyze_clicked:
     scaled_input = scaler.transform(input_data)
     prediction = model.predict(scaled_input)[0]
     profile = get_genre_profile(prediction, tempo, acousticness)
-    # Pre-extract all profile values to avoid dict lookups inside f-strings
-    # (Python 3.10 on Render chokes on profile['key'] inside triple-quoted f-strings)
+
+    # Pre-extract values for clean string formatting
     p_accent = profile["accent"]
     p_gradient = profile["gradient"]
     p_glow = profile["glow"]
     p_name = profile["name"]
     p_confidence = profile["confidence"]
     p_desc = profile["desc"]
-    p_tempo = f"{tempo:.0f}"
-    p_acoustic = f"{acousticness:.0f}"
+    p_tempo = "{:.0f}".format(tempo)
+    p_acoustic = "{:.0f}".format(acousticness)
+
     # Celebration animation
     if lottie_celebration:
         st_lottie(lottie_celebration, height=160, speed=1.2, key="celebration_vfx")
-    # Pulse rings HTML
-    # Pulse rings HTML (built via concatenation)
-    pulse_rings = '<div class="pulse-ring-container">'
-    for i in range(3):
-        delay = i * 1.2
-        d = i * 1.2
-        pulse_rings += (
-            f'<div class="pulse-ring" style="'
-            f'border-color:{profile["accent"]}30;'
-            f'animation-duration:3.6s;'
-            f'animation-delay:{delay:.1f}s;'
-            f'"></div>'
-            '<div class="pulse-ring" style="'
-            "border-color:" + p_accent + "30;"
-            "animation-duration:3.6s;"
-            "animation-delay:" + f"{d:.1f}" + "s;"
-            '"></div>'
-        )
-    pulse_rings += '</div>'
-    pulse_rings += "</div>"
-    # Result card
-    st.markdown(
-        f"""
-        <div class="result-card" style="border-color: {profile['accent']}15;">
-            {pulse_rings}
-    # Build result card via string concatenation (no f-string triple-quote issues)
-    card_html = (
-        '<div class="result-card" style="border-color: ' + p_accent + '15;">'
-        + pulse_rings
-        + '<div style="position:absolute;top:0;left:0;right:0;height:4px;'
-          "background:" + p_gradient + ";"
-          "border-radius: var(--radius-lg) var(--radius-lg) 0 0;"
-          "box-shadow: 0 0 20px " + p_glow + ";"
-          'z-index:1;"></div>'
-            <div style="position:absolute;top:0;left:0;right:0;height:4px;
-                        background:{profile['gradient']};
-                        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-                        box-shadow: 0 0 20px {profile['glow']};
-                        z-index:1;"></div>
-        + '<span class="result-badge" style="'
-          "background:" + p_accent + "15;"
-          "color:" + p_accent + ";"
-          "box-shadow: 0 0 15px " + p_accent + '20;">'
-          "✦ Classification Complete"
-          "</span>"
-            <span class="result-badge"
-                  style="background:{profile['accent']}15; color:{profile['accent']};
-                         box-shadow: 0 0 15px {profile['accent']}20;">
-                ✦ Classification Complete
-            </span>
-        + '<p class="result-genre" style="'
-          "background:" + p_gradient + ";"
-          "-webkit-background-clip:text;"
-          "-webkit-text-fill-color:transparent;"
-          "background-clip:text;"
-          "filter: drop-shadow(0 0 30px " + p_glow + ');">'
-        + p_name
-        + "</p>"
-            <p class="result-genre"
-               style="background:{profile['gradient']};
-                      -webkit-background-clip:text;
-                      -webkit-text-fill-color:transparent;
-                      background-clip:text;
-                      filter: drop-shadow(0 0 30px {profile['glow']});">
-                {profile['name']}
-            </p>
-        + '<hr class="result-divider">'
-            <hr class="result-divider">
-        + '<p class="result-desc">' + p_desc + "</p>"
-            <p class="result-desc">{profile['desc']}</p>
+
+    # Build result card HTML using a helper function
+    # (Streamlit magic parser can't interfere inside function bodies)
+    def build_result_card():
+        rings = ""
+        for i in range(3):
+            d = "{:.1f}".format(i * 1.2)
+            rings += '<div class="pulse-ring" style="border-color:' + p_accent + '30;animation-duration:3.6s;animation-delay:' + d + 's;"></div>'
+
+        parts = []
+        parts.append('<div class="result-card" style="border-color:' + p_accent + '15;">')
+        parts.append('<div class="pulse-ring-container">' + rings + '</div>')
+        parts.append('<div style="position:absolute;top:0;left:0;right:0;height:4px;background:' + p_gradient + ';border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:0 0 20px ' + p_glow + ';z-index:1;"></div>')
+        parts.append('<span class="result-badge" style="background:' + p_accent + '15;color:' + p_accent + ';box-shadow:0 0 15px ' + p_accent + '20;">✦ Classification Complete</span>')
+        parts.append('<p class="result-genre" style="background:' + p_gradient + ';-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px ' + p_glow + ');">' + p_name + '</p>')
+        parts.append('<hr class="result-divider">')
+        parts.append('<p class="result-desc">' + p_desc + '</p>')
+
         # Confidence bar
-        + '<div style="margin-top:22px; position:relative; z-index:1;">'
-          '<div style="display:flex; justify-content:space-between; margin-bottom:6px;">'
-          '<span style="font-size:0.65rem; letter-spacing:2px;'
-          "text-transform:uppercase; color:var(--text-muted);"
-          'font-weight:600;">Model Confidence</span>'
-          "<span style=\"font-family:'JetBrains Mono',monospace; font-size:0.8rem;"
-          "font-weight:700; color:" + p_accent + ';">'
-        + str(p_confidence) + "%"
-          "</span>"
-          "</div>"
-          '<div class="confidence-track">'
-          '<div class="confidence-fill" style="'
-          "width:" + str(p_confidence) + "%;"
-          "background:" + p_gradient + ";"
-          "box-shadow: 0 0 12px " + p_glow + ';"></div>'
-          "</div>"
-          "</div>"
-            <!-- Confidence bar -->
-            <div style="margin-top:22px; position:relative; z-index:1;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                    <span style="font-size:0.65rem; letter-spacing:2px;
-                                 text-transform:uppercase; color:var(--text-muted);
-                                 font-weight:600;">Model Confidence</span>
-                    <span style="font-family:'JetBrains Mono',monospace; font-size:0.8rem;
-                                 font-weight:700; color:{profile['accent']};">
-                        {profile['confidence']}%
-                    </span>
-                </div>
-                <div class="confidence-track">
-                    <div class="confidence-fill"
-                         style="width:{profile['confidence']}%;
-                                background:{profile['gradient']};
-                                box-shadow: 0 0 12px {profile['glow']};"></div>
-                </div>
-            </div>
+        conf_str = str(p_confidence)
+        parts.append('<div style="margin-top:22px;position:relative;z-index:1;">')
+        parts.append('<div style="display:flex;justify-content:space-between;margin-bottom:6px;">')
+        parts.append('<span style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-weight:600;">Model Confidence</span>')
+        parts.append("<span style=\"font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:700;color:" + p_accent + ";\">" + conf_str + "%</span>")
+        parts.append('</div>')
+        parts.append('<div class="confidence-track">')
+        parts.append('<div class="confidence-fill" style="width:' + conf_str + '%;background:' + p_gradient + ';box-shadow:0 0 12px ' + p_glow + ';"></div>')
+        parts.append('</div></div>')
+
         # Stats chips
-        + '<div class="stats-row">'
-          '<div class="stat-chip">'
-          '<span class="stat-value" style="color:' + p_accent + ';">'
-        + p_tempo
-        + "</span>"
-          '<span class="stat-label">BPM</span>'
-          "</div>"
-          '<div class="stat-chip">'
-          '<span class="stat-value" style="color:' + p_accent + ';">'
-        + p_acoustic + "%"
-          "</span>"
-          '<span class="stat-label">Acoustic</span>'
-          "</div>"
-          '<div class="stat-chip">'
-          '<span class="stat-value" style="color:' + p_accent + ';">'
-          "SVM"
-          "</span>"
-          '<span class="stat-label">Engine</span>'
-          "</div>"
-          "</div>"
-            <!-- Stats chips -->
-            <div class="stats-row">
-                <div class="stat-chip">
-                    <span class="stat-value" style="color:{profile['accent']};">
-                        {tempo:.0f}
-                    </span>
-                    <span class="stat-label">BPM</span>
-                </div>
-                <div class="stat-chip">
-                    <span class="stat-value" style="color:{profile['accent']};">
-                        {acousticness:.0f}%
-                    </span>
-                    <span class="stat-label">Acoustic</span>
-                </div>
-                <div class="stat-chip">
-                    <span class="stat-value" style="color:{profile['accent']};">
-                        SVM
-                    </span>
-                    <span class="stat-label">Engine</span>
-                </div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-        + "</div>"
-    )
-    st.markdown(card_html, unsafe_allow_html=True)
+        parts.append('<div class="stats-row">')
+        parts.append('<div class="stat-chip"><span class="stat-value" style="color:' + p_accent + ';">' + p_tempo + '</span><span class="stat-label">BPM</span></div>')
+        parts.append('<div class="stat-chip"><span class="stat-value" style="color:' + p_accent + ';">' + p_acoustic + '%</span><span class="stat-label">Acoustic</span></div>')
+        parts.append('<div class="stat-chip"><span class="stat-value" style="color:' + p_accent + ';">SVM</span><span class="stat-label">Engine</span></div>')
+        parts.append('</div>')
+
+        parts.append('</div>')
+        return "".join(parts)
+
+    st.markdown(build_result_card(), unsafe_allow_html=True)
+
+
 # ──────────────────────────────────────────────
 # FOOTER
 # ──────────────────────────────────────────────
